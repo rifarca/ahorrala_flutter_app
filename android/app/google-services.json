@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "761428524554",
+    "project_id": "ahorralaapp",
+    "storage_bucket": "ahorralaapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761428524554:android:0ac0f117f762a1027969f3",
+        "android_client_info": {
+          "package_name": "com.ahorrala.app.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "761428524554-uhm1siahoid1juskq900m73nit4mf67j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKsGZY4LFNWtzsq92qV7kk0WR36EGDLG0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "761428524554-uhm1siahoid1juskq900m73nit4mf67j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "761428524554-i6p5fhamn6b1gc148ulv7vi5diff7hqd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ahorrala.app.ios",
+                "app_store_id": "6763429291"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

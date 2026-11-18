@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "providers": {}
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "ahorralaapp",
+          "appId": "1:761428524554:android:0ac0f117f762a1027969f3",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "ahorralaapp",
+          "appId": "1:761428524554:ios:771d60ed0cf13d907969f3",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "ahorralaapp",
+          "configurations": {
+            "android": "1:761428524554:android:0ac0f117f762a1027969f3",
+            "ios": "1:761428524554:ios:771d60ed0cf13d907969f3"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,289 @@
+// ignore_for_file: unused_local_variable, file_names, avoid_print, use_rethrow_when_possible, non_constant_identifier_names
+
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/Categories.dart';
+import '../models/Items.dart';
+import 'data.dart';
+
+/// Cliente HTTP único (Singleton) configurado con Hive Cache y reintentos automáticos para Error 429
+class ApiClient {
+  static final ApiClient _instance = ApiClient._internal();
+  late final Dio dio;
+
+  factory ApiClient() => _instance;
+
+  ApiClient._internal() {
+    dio = Dio(
+      BaseOptions(
+        persistentConnection: true,
+        connectTimeout: const Duration(seconds: 20),
+        receiveTimeout: const Duration(seconds: 20),
+      ),
+    );
+
+    // 1. Configuración de Caché Persistente con Hive
+    final cacheOptions = CacheOptions(
+      store: HiveCacheStore(
+        Hive.box('api_cache').path,
+      ), // Usa tu directorio/caja existente de Hive
+      policy: CachePolicy
+          .refreshForceCache, // Busca en caché primero; si expira, descarga
+      maxStale: const Duration(days: 1), // Duración de los datos en caché
+      priority: CachePriority.normal,
+    );
+
+    dio.interceptors.add(DioCacheInterceptor(options: cacheOptions));
+
+    // 2. Interceptor para manejar el error 429 (Too Many Requests)
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioException err, ErrorInterceptorHandler handler) async {
+          if (err.response?.statusCode == 429) {
+            // Lee el delay enviado por tu servidor Laravel o usa 2 segundos por defecto
+            final retryAfter =
+                int.tryParse(
+                  err.response?.headers.value('retry-after') ?? '',
+                ) ??
+                2;
+            await Future.delayed(Duration(seconds: retryAfter));
+
+            try {
+              final response = await dio.fetch(err.requestOptions);
+              return handler.resolve(response);
+            } catch (e) {
+              return handler.next(err);
+            }
+          }
+          return handler.next(err);
+        },
+      ),
+    );
+  }
+}
+
+class Helper {
+  static bool isDebug = false;
+  static bool isDevice = true;
+
+  // Obtener la instancia única de Dio centralizada
+  static final Dio _dio = ApiClient().dio;
+
+  static String getCategoryNameById(int cat) {
+    String res = '';
+    res = cats.where((c) => c.id == cat).first.name;
+    return res;
+  }
+
+  static String getLogoById(int bid) {
+    String res = '';
+    res = logos.where((c) => c.id == bid).first.image;
+    return res;
+  }
+
+  static String getCategoryImageById(int cid) {
+    String res = '';
+    res = cats.where((c) => c.id == cid).first.image;
+    return res;
+  }
+
+  static Future<List<Categories>> getCategoriesList() async {
+    String endPoint = "categorias/listar";
+    String url = _buildUrl(endPoint);
+
+    var res = await _dio.get(url);
+    var data = res.data;
+    _dio.close();
+    // data = jsonDecode(data);
+    return CatsFromJsonList(data);
+  }
+
+  static Categories getCategoryByID(int cid) {
+    final res = cats.where((c) => c.id == cid).first;
+
+    return res;
+  }
+
+  static Future<List<Items>> getItemsCompare(String sku) async {
+    String endPoint = "items/ver/$sku";
+    String url = _buildUrl(endPoint);
+
+    var res = await _dio.get(url);
+    var data = res.data;
+    _dio.close();
+    // data = jsonDecode(data);
+    return ItemsFromJsonList(data);
+  }
+
+  static Future<List<Items>> getItemsListByCategory(
+    int cat,
+    int sub,
+    int limit,
+  ) async {
+    String endPoint = "items/$cat/0/$limit/listar";
+    String url = _buildUrl(endPoint);
+    var res = await _dio.get(url);
+    var data = res.data;
+    //rdata = jsonDecode(data);
+
+    return ItemsFromJsonList(data);
+  }
+
+  static Color getColorByCategoryId(int cid) {
+    switch (cid) {
+      case 1:
+        return const Color.fromARGB(255, 97, 96, 96);
+      case 2:
+        return const Color.fromARGB(255, 18, 65, 21);
+      case 7:
+        return const Color.fromARGB(255, 183, 58, 121);
+      case 4:
+        return const Color.fromARGB(255, 5, 14, 65);
+      case 5:
+        return const Color.fromARGB(255, 201, 92, 3);
+      case 6:
+        return const Color.fromARGB(255, 34, 163, 196);
+      case 10:
+        return Colors.orange;
+    }
+    return Colors.black;
+  }
+
+  static String sanitizeToFriendlyUrl(String input) {
+    // Convertir a minúsculas
+    String sanitized = input.toLowerCase();
+
+    // Reemplazar caracteres acentuados o especiales por sus equivalentes simples
+    sanitized = sanitized
+        .replaceAll(RegExp(r'[áàäâã]'), 'a')
+        .replaceAll(RegExp(r'[éèëê]'), 'e')
+        .replaceAll(RegExp(r'[íìïî]'), 'i')
+        .replaceAll(RegExp(r'[óòöôõ]'), 'o')
+        .replaceAll(RegExp(r'[úùüû]'), 'u')
+        .replaceAll(RegExp(r'ñ'), 'n')
+        .replaceAll(RegExp(r'ç'), 'c');
+
+    // Reemplazar cualquier carácter no alfanumérico o espacios con un guion
+    sanitized = sanitized.replaceAll(RegExp(r'[^a-z0-9]+'), '-');
+
+    // Eliminar guiones adicionales al inicio o final
+    sanitized = sanitized.replaceAll(RegExp(r'^-+|-+$'), '');
+
+    return sanitized;
+  }
+
+  /// Método privado para limpiar y construir las URLs según plataforma y entorno
+  static String _buildUrl(String endpoint) {
+    late String stringUrl = "";
+    if (Platform.isAndroid) {
+      if (isDebug) {
+        stringUrl = isDevice
+            ? "http://192.168.0"
+            : "https://app.ahorrala.com/public/api";
+      }
+      stringUrl = "https://app.ahorrala.com/public/api";
+    } else if (Platform.isIOS) {
+      if (isDebug) {
+        stringUrl = isDevice
+            ? "http://192.168.0"
+            : "http://app.ahorrala.com/public/api/";
+      }
+      stringUrl = "https://app.ahorrala.com/public/api/";
+    }
+    stringUrl = "https://app.ahorrala.com/public/api/";
+    stringUrl = stringUrl + endpoint;
+    return stringUrl;
+  }
+
+  static Future<List<Items>> getItemsRelatives(String sku) async {
+    final url = _buildUrl("items/relacionados/$sku");
+    print(url);
+
+    var response = await _dio.get(url);
+    _dio.close();
+    return ItemsFromJsonList(response.data);
+  }
+
+  static List<Categories> CatsFromJsonList(List<dynamic> jsonlList) {
+    return jsonlList
+        .map((e) => Categories.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  static Future<List<Items>> getItemsBuscar({
+    required String query,
+    required int cat,
+    required int limit,
+  }) async {
+    final url = _buildUrl("items/buscar?q=$query&c=$cat&l=$limit");
+    print(url);
+
+    var response = await _dio.get(url);
+    _dio.close();
+    return ItemsFromJsonList(response.data);
+  }
+
+  static Future<List<Items>> getItemsList() async {
+    // Corrección del endpoint duplicado/mal formateado que tenías en desarrollo local
+    final url = isDebug && Platform.isAndroid && !isDevice
+        ? "http://10.10.0.2/ahorrala/public/api/items/listar"
+        : _buildUrl("items/listar");
+
+    print(url);
+    var response = await _dio.get(url);
+    _dio.close();
+    return ItemsFromJsonList(response.data);
+  }
+
+  static List<Items> ItemsFromJsonList(List<dynamic> jsonlList) {
+    return jsonlList
+        .map((e) => Items.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+
+  static Future<String?> getDeviceUniqueIdentifier() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      // Returns the hardware-based build ID string unique to the device configuration
+      return androidInfo.id;
+    } else if (Platform.isIOS) {
+      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      // Returns the vendor-specific unique device token
+      return iosInfo.identifierForVendor;
+    }
+
+    return null;
+  }
+
+  static Future<Map<String, String>> obtenerDatosControl() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String idUnico = '';
+    String plataforma = '';
+
+    try {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        idUnico = androidInfo.id; // ID único del hardware en Android
+        plataforma = 'android';
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        // ID único para tu app en iOS (cambia si el usuario desinstala todas tus apps)
+        idUnico = iosInfo.identifierForVendor ?? '';
+        plataforma = 'ios';
+      }
+    } catch (e) {
+      idUnico = 'error_id';
+    }
+
+    return {'deviceId': idUnico, 'plataforma': plataforma};
+  }
+}
