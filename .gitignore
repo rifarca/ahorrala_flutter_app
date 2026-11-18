@@ -13,7 +13,7 @@
 migrate_working_dir/
 
 # IntelliJ related
-*.iml
+
 *.ipr
 *.iws
 .idea/
@@ -22,7 +22,7 @@ migrate_working_dir/
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
-
+pubspec.lock
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
@@ -31,11 +31,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/test/
 /coverage/
-
 # Symbolication related
 app.*.symbols
-
 # Obfuscation related
 app.*.map.json
 
