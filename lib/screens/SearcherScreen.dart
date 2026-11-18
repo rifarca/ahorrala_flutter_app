@@ -81,22 +81,16 @@ class _SearcherScreenState extends State<SearcherScreen> {
   @override
   void initState() {
     super.initState();
-
     _loadProviders();
-
     _loadSearchHistory();
-
     _initScroll();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-
     _searchFocusNode.dispose();
-
     _scrollController.dispose();
-
     super.dispose();
   }
 
@@ -310,6 +304,7 @@ class _SearcherScreenState extends State<SearcherScreen> {
                         categorySearch = v!;
                         category = v;
                       });
+                      _onSearchSubmitted(_searchQuery);
                     },
                   ),
 
@@ -333,6 +328,7 @@ class _SearcherScreenState extends State<SearcherScreen> {
                       setModalState(() {
                         order = v!;
                       });
+                      _onSearchSubmitted(_searchQuery);
                     },
                   ),
 
