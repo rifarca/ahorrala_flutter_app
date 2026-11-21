@@ -1,3 +1,4 @@
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:ahorrala/helpers/Helper.dart';
 import 'package:ahorrala/providers/CategoriesProvider.dart';
 import 'package:ahorrala/providers/FavoritesProvider.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
 import '../providers/ConfigProvider.dart';
 
 class ConfigScreen extends StatefulWidget {
@@ -252,9 +252,9 @@ class _ConfigScreenState extends State<ConfigScreen> {
 
                   offset: showBottom ? Offset.zero : const Offset(0, 2),
 
-                  child: MenuCrystalBottomNavigationBar(selectedItem: 4),
+                  child: MenuNeoGlassNavigationBar(selectedItem: 4),
                 )
-              : MenuCrystalBottomNavigationBar(selectedItem: 4),
+              : MenuNeoGlassNavigationBar(selectedItem: 4),
         );
       },
     );

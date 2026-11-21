@@ -1,4 +1,5 @@
 // ignore_for_file: unused_element
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ahorrala/helpers/Helper.dart';
@@ -12,7 +13,7 @@ import 'package:provider/provider.dart';
 import '../components/ItemsByCategoryListComponent.dart';
 import 'package:ahorrala/providers/ItemsProvider.dart';
 
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -232,12 +233,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ? AnimatedSlide(
               duration: const Duration(milliseconds: 250),
               offset: showBottom ? Offset.zero : const Offset(0, 2),
-              child: MenuCrystalBottomNavigationBar(
+              child: MenuNeoGlassNavigationBar(
                 key: stepKey1,
                 selectedItem: 0,
               ),
             )
-          : MenuCrystalBottomNavigationBar(key: stepKey1, selectedItem: 0),
+          : MenuNeoGlassNavigationBar(key: stepKey1, selectedItem: 0),
     );
   }
 }

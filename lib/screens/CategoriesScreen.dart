@@ -1,3 +1,4 @@
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:ahorrala/helpers/Helper.dart';
 import 'package:ahorrala/providers/AuthProvider.dart';
 import 'package:ahorrala/providers/ConfigProvider.dart';
@@ -219,7 +220,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               offset: showBottom ? Offset.zero : const Offset(0, 2),
               child: MenuCrystalBottomNavigationBar(selectedItem: 1),
             )
-          : MenuCrystalBottomNavigationBar(selectedItem: 1),
+          : MenuNeoGlassNavigationBar(selectedItem: 1),
     );
   }
 }

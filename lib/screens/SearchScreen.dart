@@ -1,4 +1,4 @@
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:ahorrala/components/ProductItemList.dart';
 import 'package:ahorrala/components/ShimmerePlaceHolder.dart';
 import 'package:ahorrala/helpers/Helper.dart';
@@ -228,7 +228,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Buscador", style: TextStyle())),
-      bottomNavigationBar: MenuCrystalBottomNavigationBar(selectedItem: 2),
+      bottomNavigationBar: MenuNeoGlassNavigationBar(selectedItem: 2),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(

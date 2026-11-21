@@ -1,7 +1,7 @@
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:ahorrala/providers/CategoriesProvider.dart';
 import 'package:ahorrala/providers/ConfigProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
 import 'package:ahorrala/helpers/Helper.dart';
 
 import 'package:ahorrala/components/FavoriteItemShimmer.dart';
@@ -209,9 +209,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ? AnimatedSlide(
               duration: const Duration(milliseconds: 250),
               offset: showBottom ? Offset.zero : const Offset(0, 2),
-              child: MenuCrystalBottomNavigationBar(selectedItem: 3),
+              child: MenuNeoGlassNavigationBar(selectedItem: 3),
             )
-          : MenuCrystalBottomNavigationBar(selectedItem: 3),
+          : MenuNeoGlassNavigationBar(selectedItem: 3),
     );
   }
 }

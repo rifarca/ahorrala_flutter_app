@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:ahorrala/providers/ConfigProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:ahorrala/components/ItemCompareListComponent.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
+
 
 class ItemDetailScreen extends StatefulWidget {
   const ItemDetailScreen({
@@ -143,9 +144,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           ? AnimatedSlide(
               duration: const Duration(milliseconds: 250),
               offset: showBottom ? Offset.zero : const Offset(0, 2),
-              child: MenuCrystalBottomNavigationBar(selectedItem: 0),
+              child: MenuNeoGlassNavigationBar(selectedItem: 0),
             )
-          : MenuCrystalBottomNavigationBar(selectedItem: 0),
+          : MenuNeoGlassNavigationBar(selectedItem: 0),
     );
   }
 }

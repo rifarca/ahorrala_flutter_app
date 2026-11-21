@@ -1,11 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:flutter/material.dart';
 import 'package:ahorrala/providers/CategoriesProvider.dart';
 import 'package:ahorrala/providers/ConfigProvider.dart';
 import 'package:ahorrala/providers/FavoritesProvider.dart';
 
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
+
 import 'package:ahorrala/providers/ItemsProvider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -454,9 +455,9 @@ class _ItemsCategoryScreenState extends State<ItemsCategoryScreen> {
           ? AnimatedSlide(
               duration: const Duration(milliseconds: 250),
               offset: showBottom ? Offset.zero : const Offset(0, 2),
-              child: MenuCrystalBottomNavigationBar(selectedItem: 1),
+              child: MenuNeoGlassNavigationBar(selectedItem: 1),
             )
-          : MenuCrystalBottomNavigationBar(selectedItem: 1),
+          : MenuNeoGlassNavigationBar(selectedItem: 1),
     );
   }
 }

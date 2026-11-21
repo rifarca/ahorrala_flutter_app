@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:ahorrala/components/MenuNeoGlassNaviogator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:ahorrala/components/MenuCrystalBottomNavigationBar.dart';
 import 'package:ahorrala/components/ProductItemList.dart';
 import 'package:ahorrala/components/ShimmerePlaceHolder.dart';
 
@@ -734,9 +734,9 @@ class _SearcherScreenState extends State<SearcherScreen> {
 
               offset: showBottom ? Offset.zero : const Offset(0, 2),
 
-              child: MenuCrystalBottomNavigationBar(selectedItem: 2),
+              child: MenuNeoGlassNavigationBar(selectedItem: 2),
             )
-          : MenuCrystalBottomNavigationBar(selectedItem: 2),
+          : MenuNeoGlassNavigationBar(selectedItem: 2),
     );
   }
 
